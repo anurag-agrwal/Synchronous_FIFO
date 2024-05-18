@@ -17,7 +17,7 @@ output reg [ptr_bits:0] wr_ptr, rd_ptr;
 always@(posedge clk)
 	begin
 		if (!rst_n)
-			wr_ptr <= {ptr_bits{1'b0}};
+			wr_ptr <= {ptr_bits+1{1'b0}};
 			
 		else if (wr_en && !FULL)
 			begin
@@ -37,7 +37,7 @@ always@(posedge clk)
 	begin
 		if (!rst_n)
 			begin
-				rd_ptr <= {ptr_bits{1'b0}};
+				rd_ptr <= {ptr_bits+1{1'b0}};
 				data_out <= {DATA_WIDTH{1'b0}};
 			end
 		
