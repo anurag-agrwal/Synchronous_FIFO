@@ -57,13 +57,16 @@ initial
 		#10 data_in  = 6'b000010;
 		#10 data_in  = 6'b000001;
 		#10 data_in  = 6'b000011;
-			 wr_en    = 1'b0;
+
+		// Disabling the wr_en to check the EMPTY condition
+		    wr_en    = 1'b0;
+		
 		#10 data_in  = 6'b000111;
 		#10 data_in  = 6'b001111;		
 		#10 data_in  = 6'b011111;		
 		#10 data_in  = 6'b111111;
 		
-		#100 $stop;
+		#50 $stop;
 	end
 
 endmodule
