@@ -1,3 +1,4 @@
+// Change the DEPTH parameter in DUT and TB
 module Synchronous_FIFO #(parameter DEPTH = 7, DATA_WIDTH = 6)(clk, rst_n, wr_en, rd_en, FULL, EMPTY, data_in, data_out, wr_ptr, rd_ptr);
 
 parameter ptr_bits = $clog2(DEPTH);
