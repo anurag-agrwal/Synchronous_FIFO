@@ -17,17 +17,17 @@ output reg [ptr_bits:0] wr_ptr, rd_ptr;
 always@(posedge clk)
 	begin
 		if (!rst_n)
-			wr_ptr <= {ptr_bits+1{1'b0}};
+			wr_ptr <= {ptr_bits+1{1'b0}};		// ALL the bits
 			
 		else if (wr_en && !FULL)
 			begin
-				fifo[wr_ptr[ptr_bits-1:0]] <= data_in;
+				fifo[wr_ptr[ptr_bits-1:0]] <= data_in;  // Make sure only the fifo doesn't go beyond the actual wr_ptr
 				wr_ptr <= wr_ptr + 1'b1;
 				
-				if (wr_ptr == DEPTH-1)
+				if (wr_ptr == DEPTH-1)			// MOD DEPTH Counter
 					begin
-						wr_ptr[ptr_bits] <= ~wr_ptr[ptr_bits];
-						wr_ptr[ptr_bits-1:0] <= {ptr_bits-1{1'b0}};
+						wr_ptr[ptr_bits] <= ~wr_ptr[ptr_bits];		// Flip MSB bit
+						wr_ptr[ptr_bits-1:0] <= {ptr_bits-1{1'b0}};	// Make LSB 0
 					end
 			end
 	end
@@ -43,18 +43,21 @@ always@(posedge clk)
 		
 		else if (rd_en && !EMPTY)
 			begin
-				data_out <= fifo[rd_ptr[ptr_bits-1:0]];
+				data_out <= fifo[rd_ptr[ptr_bits-1:0]];  // Make sure only the fifo doesn't go beyond the actual rd_ptr
 				rd_ptr <= rd_ptr + 1'b1;
 				
-				if (rd_ptr == DEPTH-1)
+				if (rd_ptr == DEPTH-1)			// MOD DEPTH Counter
 					begin
-						rd_ptr[ptr_bits] <= ~rd_ptr[ptr_bits];
-						rd_ptr[ptr_bits-1:0] <= {ptr_bits-1{1'b0}};
+						rd_ptr[ptr_bits] <= ~rd_ptr[ptr_bits];		// Flip MSB bit
+						rd_ptr[ptr_bits-1:0] <= {ptr_bits-1{1'b0}};	// LSB to 0
 					end
 			end
 	end
-	
+
+// Full condition: Extra added MSB bit needs to be different for rd_ptr and wr_ptr	
 assign FULL = ({!wr_ptr[ptr_bits], wr_ptr[ptr_bits-1:0]} == rd_ptr[ptr_bits:0]);
+
+// Empty condition: rd_ptr and wr_ptr should be same, including the extra added MSB bit
 assign EMPTY = (wr_ptr[ptr_bits:0] == rd_ptr[ptr_bits:0]);
 
 endmodule
